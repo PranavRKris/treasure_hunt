@@ -509,10 +509,11 @@
         <span class="dash">—</span>
         <input class="segment-input" id="s3" maxlength="3" placeholder="---" style="width:85px" oninput="this.value=this.value.toUpperCase()" />
         <span class="dash">—</span>
-        <input class="segment-input" id="s4" maxlength="1" placeholder="--" style="width:55px" oninput="this.value=this.value.toUpperCase()" />
+        <input class="segment-input" id="s4" maxlength="1" placeholder="-" style="width:55px" oninput="this.value=this.value.toUpperCase()" />
       </div>
 
       <button class="submit-btn" onclick="checkAnswer()">[ SUBMIT CODE ]</button>
+      <!-- checkAnswer() is async — browser handles this correctly via onclick -->
 
       <div id="feedback"></div>
     </div>
@@ -550,126 +551,78 @@
     el.style.display = el.style.display === 'block' ? 'none' : 'block';
   }
 
-  /* ---- ANSWERS (obfuscated slightly) ---- */
-  // Layer 1: "KX LVMZX" shift -7 → "DQ ENFORCEMENT"... wait, let's be precise:
-  // KX LVMZX, shift back 7:
-  //   K(10) -7 = D(3) = D
-  //   X(23) -7 = Q(16) = Q  → DQ
-  //   L(11)-7=E, V(21)-7=O, M(12)-7=F, Z(25)-7=S, X(23)-7=Q → ... 
-  // Actually the cipher: "KX LVMZX" decodes to "DQ ERRORS" — let me recalculate cleanly.
-  // Let me use: encode "BE READY" with shift +6:
-  //   B+6=H, E+6=K, R+6=X, E+6=K, A+6=G, D+6=J, Y+6=E → "HK XKGJE" — messy
-  // CLEAN DESIGN: 
-  //   plaintext = "IN FORCE"  shift +10
-  //   I(8)+10=S, N(13)+10=X → SX
-  //   F(5)+10=P, O(14)+10=Y, R(17)+10=B, C(2)+10=M, E(4)+10=O → "SX PYBMO" — ugly
-  // BEST APPROACH: encode with shift 7
-  //   plaintext = "DQ ORDER"
-  //   D+7=K, Q+7=X → KX  ✓
-  //   O+7=V, R+7=Y, D+7=K, E+7=L, R+7=Y → "KX VYKLE"
-  // Hmm. Let me set the encoded message properly and work backwards.
-  // ENCODED = "KX LVMZX"
-  // Shift back 7: K→D, X→Q, L→E, V→O, M→F, Z→S, X→Q
-  // → "DQ EOFSQ" -- not a phrase.
-  // Let me re-encode properly: plaintext = "GO ROGUE", shift +4
-  //   G+4=K, O+4=S → "KS"  (not KX)
-  // plaintext = "DO RECON", shift +7
-  //   D+7=K, O+7=V → KV  (not KX)
-  // plaintext = "DQ..." no words start with DQ
-  // Let me pick the answer first, then build the cipher:
-  // Segment 1 = "PR" (from "PROCEED" — first 2 letters, or initials "PREPARE REPORT")
-  // Segment 2 = "8F" — "8th FLOOR" or symbol ⬨(8) + ⬟... wait segment 2 = "38" but we said "⬢⬩" = "3,8" = "38"? Hmm
-  // Let me redesign for cleaner puzzle:
-  // Target code: PR - 38 - MP4 - 1
-  // Segment 1: "PR" = initials of a decoded phrase
-  // Segment 2: "38" = ⬢(3) ⬩(8)
-  // Segment 3: "MP4" = the mole's codename
-  // Segment 4: "1" = middle binary value = B = 0001 = 1 ✓
-  
-  // For segment 1 = "PR":
-  // plaintext = "PROCEED RECON" → initials = "PR"
-  // encode with shift +5: P+5=U, R+5=W, O+5=T, C+5=H, E+5=J, E+5=J, D+5=I → "UW THJJI WJHTS" too long
-  // simpler: plaintext = "PLAN RENDEZVOUS" → initials PR, but let's just do 2 words
-  // plaintext = "PREPARE RENDEZVOUS" → PR, but the cipher text would be long
-  // Let me use: plaintext = "PURPLE RAIN" → initials "PR"
-  // encode +4: P+4=T, U+4=Y, R+4=V, P+4=T, L+4=P, E+4=I → "TYVTPI" and RAIN→VEMR
-  // Encoded: "TYVTPI VEMR"  → agent decodes with -4 → "PURPLE RAIN" → PR
-  // Hmm but how would they know shift=4? Let me give: "The enemy shifts each letter forward by 7"
-  // encode +7: P+7=W, R+7=Y → WY; plaintext = "WY..." nothing
-  // OK let me just use shift 7, ENCODE "IN REACH":
-  //   I+7=P, N+7=U → PU  
-  // encode "IN SECTOR":
-  //   I+7=P, N+7=U, S+7=Z, E+7=L, C+7=J, T+7=A, O+7=V, R+7=Y → "PU ZLJAYV"
-  // initials would be PU, not PR.
-  // Let me use shift 3, plaintext "PROCEED":
-  //   No I need 2 words.
-  // Plaintext = "PROCEED RELAY", shift 3: P+3=S, R+3=U → SU... not PR
-  // I want the DECODED text to start with PR.
-  // OK: decoded = "PHASE ROSE" → initials "PR", meaningless
-  // decoded = "PROJECT RAINBOW" → initials "PR" 
-  // decoded = "PROCEED" → not 2 initials from 2 words...
-  // decoded = "PHANTOM ROUTE" → initials P, R → "PR"!
-  // encode "PHANTOM ROUTE" with shift 7:
-  //   P+7=W, H+7=O, A+7=H, N+7=U, T+7=A, O+7=V, M+7=T → "WOHUAVT"
-  //   R+7=Y, O+7=V, U+7=B, T+7=A, E+7=L → "YVBAL"
-  //   Encoded: "WOHUAVT YVBAL"
-  // The cipher box shows "WOHUAVT YVBAL", shift back 7, get "PHANTOM ROUTE", initials = PR ✓
-  // But puzzle says "two capitalised initials" - they need to understand first letters of 2 words.
+  /* ---- VERIFICATION ENGINE ---- */
+  // Salt — stored as char-code array, never as a string literal
+  const _s = (()=>{
+    return [116,78,52,33,87,106,80,121,90,88,49,99,81,35].map(x=>String.fromCharCode(x)).join('');
+  })();
 
-  const ANSWERS = {
-    s1: 'PR',   // PHANTOM ROUTE decoded from caesar
-    s2: '38',   // symbols ⬢=3, ⬩=8
-    s3: 'MP4',  // logic grid mole
-    s4: '1'     // middle binary B = 0001 = 1
-  };
+  // XOR key for deobfuscating stored hashes
+  const _k = [0x3A,0x7C,0x55,0xF2,0x18,0xE4,0x9B,0x2D];
 
-  let attempts = 0;
-  let solved = [false, false, false, false];
+  // XOR-obfuscated SHA-256(answer + salt) for each segment
+  // These are meaningless without the salt and XOR key — answers are never stored in plain text
+  const _H = [
+    /* seg1 */ [89,29,108,147,121,130,168,26,89,68,55,193,126,209,248,20,88,26,100,198,123,209,162,78,94,74,96,193,125,210,248,24,88,26,102,195,44,129,173,75,2,72,49,144,42,211,163,72,89,72,51,196,122,213,162,73,92,76,97,195,121,135,162,79],
+    /* seg2 */ [3,29,101,145,42,134,253,31,10,79,98,202,126,134,171,31,13,24,55,147,42,129,255,72,95,74,52,150,33,220,162,79,88,73,48,150,126,215,253,30,89,30,49,199,47,135,171,26,94,29,103,194,122,209,254,72,91,73,108,199,122,129,162,78],
+    /* seg3 */ [89,31,51,203,41,133,249,25,12,29,98,199,121,215,248,20,94,29,55,198,122,215,168,79,13,30,102,198,121,209,253,78,3,68,52,148,123,209,162,29,92,31,100,195,33,211,250,28,15,76,54,147,42,129,254,79,3,29,48,196,46,135,170,78],
+    /* seg4 */ [9,29,54,150,42,221,248,79,91,26,108,195,125,210,172,30,95,75,54,198,124,215,169,20,8,72,100,203,125,208,248,28,9,31,54,192,126,135,174,79,10,77,108,148,43,214,170,31,14,26,102,148,125,221,163,24,92,30,100,195,42,129,170,24]
+  ];
 
-  function checkAnswer() {
-    attempts++;
-    document.getElementById('att-count').textContent = attempts;
+  // Recover stored hash hex from obfuscated array
+  function _xr(arr) {
+    return arr.map((v,i) => String.fromCharCode(v ^ _k[i % _k.length])).join('');
+  }
 
-    const v1 = document.getElementById('s1').value.trim().toUpperCase();
-    const v2 = document.getElementById('s2').value.trim().toUpperCase();
-    const v3 = document.getElementById('s3').value.trim().toUpperCase();
-    const v4 = document.getElementById('s4').value.trim().toUpperCase();
+  // SHA-256 via SubtleCrypto
+  async function _hx(msg) {
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(msg));
+    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+  }
 
-    const fb = document.getElementById('feedback');
+  let _attempts = 0;
+  let _solved = [false, false, false, false];
 
-    solved[0] = v1 === ANSWERS.s1;
-    solved[1] = v2 === ANSWERS.s2;
-    solved[2] = v3 === ANSWERS.s3;
-    solved[3] = v4 === ANSWERS.s4;
+  async function checkAnswer() {
+    _attempts++;
+    document.getElementById('att-count').textContent = _attempts;
 
-    // Visual per-input
+    const vals = [
+      document.getElementById('s1').value.trim().toUpperCase(),
+      document.getElementById('s2').value.trim().toUpperCase(),
+      document.getElementById('s3').value.trim().toUpperCase(),
+      document.getElementById('s4').value.trim().toUpperCase(),
+    ];
+
+    // Hash all inputs concurrently
+    const computed = await Promise.all(vals.map(v => _hx(v + _s)));
+
+    // Compare against stored (deobfuscated) hashes
+    _solved = _H.map((h, i) => computed[i] === _xr(h));
+
+    // Visual per-input feedback
     ['s1','s2','s3','s4'].forEach((id, i) => {
       const el = document.getElementById(id);
       el.classList.remove('correct','wrong');
-      if ([v1,v2,v3,v4][i] !== '') {
-        if (solved[i]) el.classList.add('correct');
-        else el.classList.add('wrong');
-      }
+      if (vals[i] !== '') el.classList.add(_solved[i] ? 'correct' : 'wrong');
     });
 
-    // Update progress dots
-    solved.forEach((s,i) => {
+    // Progress dots
+    _solved.forEach((s, i) => {
       document.getElementById('d'+(i+1)).classList.toggle('done', s);
     });
 
-    if (solved.every(Boolean)) {
-      fb.style.display = 'none';
-      triggerSuccess(v1, v2, v3, v4);
-    } else {
-      const wrongSegments = [];
-      if (!solved[0]) wrongSegments.push('Segment 1 (Layer 01)');
-      if (!solved[1]) wrongSegments.push('Segment 2 (Layer 02)');
-      if (!solved[2]) wrongSegments.push('Segment 3 (Layer 03)');
-      if (!solved[3]) wrongSegments.push('Segment 4 (Layer 04)');
+    const fb = document.getElementById('feedback');
 
+    if (_solved.every(Boolean)) {
+      fb.style.display = 'none';
+      triggerSuccess(...vals);
+    } else {
+      const bad = ['Segment 1 (Layer 01)','Segment 2 (Layer 02)','Segment 3 (Layer 03)','Segment 4 (Layer 04)']
+        .filter((_,i) => !_solved[i]);
       fb.className = 'error';
       fb.style.display = 'block';
-      fb.innerHTML = `⚠ VERIFICATION FAILED — Incorrect: ${wrongSegments.join(', ')}.<br>Re-check your decryption. ${attempts >= 5 ? '[ Hints are available on each layer. ]' : ''}`;
+      fb.innerHTML = `⚠ VERIFICATION FAILED — Incorrect: ${bad.join(', ')}.<br>Re-check your decryption. ${_attempts >= 5 ? '[ Hints are available on each layer. ]' : ''}`;
     }
   }
 
