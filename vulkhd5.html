@@ -381,28 +381,6 @@ body {
       </div>
 
       <div class="section-rule"></div>
-
-      <!-- ══════════════════════════════════════════
-           PUZZLE 1 — THE STONE TABLET
-           Mechanism: Runic alphabet + Caesar shift
-           
-           The tablet shows 4 runes. The legend maps runes to letters,
-           BUT the letters shown are shifted forward by the Roman numeral
-           carved on the tablet border (III = shift of 3).
-           
-           To decode: look up each rune in the legend → get the "raw" letter
-           → shift it BACK by III positions in the alphabet.
-           
-           Legend (rune → displayed letter):
-             ᚠ → E  (true: B, E-3=B)
-             ᚢ → Z  (true: W, Z-3=W)
-             ᚦ → W  (true: T, W-3=T)
-             ᚨ → F  (true: C, F-3=C)
-           
-           Sequence on tablet: ᚠ · ᚢ · ᚦ · ᚨ → raw E,Z,W,F → shift back III → B,W,T,C
-           Answer: BWTC
-      ══════════════════════════════════════════ -->
-
       <div class="clue-label">Artefact I — The Stone Tablet (Segment 1 · 4 letters)</div>
       <p style="font-size:14px;color:var(--ink-faded);line-height:1.9;margin-bottom:12px">
         Dr. Harlow chiselled a runic legend beside the tablet — but noted the scribes used a 
@@ -656,19 +634,29 @@ body {
   const W = 300, H = 300;
 
   // Stars: [x%, y%, group]
-  // group 1 = west (gold, 1 star), group 2 = centre (blue, 5 stars), group 3 = east (orange, 1 star)
+  // group 1 = west (gold, 2 stars), group 2 = centre (blue, 7 stars), group 3 = east (orange, 6 stars)
   const stars = [
-    [16, 48, 1],   // lone west star
-    [44, 18, 2],   // β centre
-    [54, 36, 2],   // γ centre
-    [40, 52, 2],   // δ centre
-    [60, 52, 2],   // ε centre
-    [50, 68, 2],   // ζ centre
-    [84, 44, 3],   // lone east star
+    [14, 42, 1],   // west star 1 (index 0)
+    [18, 54, 1],   // west star 2 (index 1)
+    [42, 15, 2],   // centre star 1 (index 2)
+    [52, 28, 2],   // centre star 2 (index 3)
+    [38, 42, 2],   // centre star 3 (index 4)
+    [58, 42, 2],   // centre star 4 (index 5)
+    [48, 56, 2],   // centre star 5 (index 6)
+    [44, 68, 2],   // centre star 6 (index 7)
+    [54, 68, 2],   // centre star 7 (index 8)
+    [76, 22, 3],   // east star 1 (index 9)
+    [84, 32, 3],   // east star 2 (index 10)
+    [88, 44, 3],   // east star 3 (index 11)
+    [82, 54, 3],   // east star 4 (index 12)
+    [74, 58, 3],   // east star 5 (index 13)
+    [78, 68, 3],   // east star 6 (index 14)
   ];
 
   // Constellation lines only for group 2
-  const lines = [[1,2],[2,3],[2,4],[3,5],[4,5]];
+  const lines = [[0,1],
+    [2,3],[3,4],[3,5],[4,6],[5,6],[6,7],[6,8],
+    [9,10],[10,11],[11,12],[11,13],[12,14]];
   const colors = {1:'#ffcc44', 2:'#88ccff', 3:'#ff9944'};
 
   // Faint region labels
@@ -744,7 +732,7 @@ const _k = [0x4B,0x9F,0x2C,0xE1,0x57,0xA3,0x8D,0x1E];
 const _H = [
   [124,249,31,211,98,149,186,47,45,254,26,217,96,154,190,45,40,175,31,132,51,155,185,45,45,250,21,211,49,194,180,40,127,252,79,213,99,193,235,125,122,168,72,133,100,144,185,44,40,254,78,212,102,147,239,41,47,250,26,211,97,199,188,122],
   [122,169,72,208,51,145,233,39,124,172,74,209,100,148,238,41,127,175,24,214,50,194,232,43,114,175,77,214,51,199,190,40,127,171,21,135,110,151,233,41,47,175,29,211,53,146,185,125,115,251,27,215,102,149,239,43,114,172,79,130,50,148,185,122],
-  [127,170,74,214,101,146,236,120,122,174,77,210,101,151,236,122,114,175,31,208,111,150,232,38,115,167,28,135,54,194,232,45,41,250,79,211,49,144,188,120,42,170,73,211,54,151,184,43,46,249,20,212,51,150,235,40,123,175,78,132,100,198,235,41]
+  [47,175,21,133,50,198,181,125,126,250,73,208,54,194,187,43,125,171,73,209,111,197,186,43,41,167,24,212,51,146,232,40,115,175,24,211,97,149,180,46,46,175,20,216,111,148,191,122,126,173,25,215,53,199,233,45,124,167,25,131,100,193,181,44]
 ];
 function _xr(arr){ return arr.map((v,i)=>String.fromCharCode(v^_k[i%_k.length])).join(''); }
 async function _hx(msg){

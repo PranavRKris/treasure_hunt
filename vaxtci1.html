@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Excavation Site 7 — Field Research Terminal</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;900&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap');
+
+:root {
+  --parch: #f0e6c8;
+  --parch-dark: #d4c49a;
+  --ink: #2c1a08;
+  --ink-faded: #5c3d1e;
+  --rust: #8b2500;
+  --gold: #b8860b;
+  --gold-bright: #d4a017;
+  --aged: #c8a96e;
+  --shadow: rgba(44,26,8,0.35);
+  --stone: #7a6a52;
+  --moss: #4a5c2f;
+  --bg: #1a1208;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  min-height: 100vh;
+  font-family: 'Crimson Text', serif;
+  color: var(--ink);
+  overflow-x: hidden;
+}
+
+.parchment {
+  background:
+    radial-gradient(ellipse at 20% 15%, rgba(200,169,110,0.4) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 85%, rgba(139,90,40,0.3) 0%, transparent 50%),
+    radial-gradient(ellipse at 60% 40%, rgba(255,240,200,0.15) 0%, transparent 60%),
+    linear-gradient(160deg, #e8d5a3 0%, #d4bc82 30%, #e2cfa0 60%, #c8ad72 100%);
+  position: relative;
+}
+.parchment::before {
+  content: '';
+  position: absolute; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.06'/%3E%3C/svg%3E");
+  pointer-events: none; opacity: 0.5;
+}
+
+@keyframes fadeIn { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:none} }
+@keyframes flicker { 0%,100%{opacity:1} 94%{opacity:1} 95%{opacity:.6} 96%{opacity:1} }
+@keyframes dustFloat {
+  0%{transform:translateY(0) translateX(0);opacity:0}
+  20%{opacity:1}
+  100%{transform:translateY(-120px) translateX(30px);opacity:0}
+}
+@keyframes stampIn { from{transform:scale(2) rotate(-8deg);opacity:0} to{transform:scale(1) rotate(-8deg);opacity:1} }
+@keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-5px)} 75%{transform:translateX(5px)} }
+@keyframes glow { 0%,100%{text-shadow:0 0 8px var(--gold)} 50%{text-shadow:0 0 20px var(--gold-bright), 0 0 40px var(--gold)} }
+@keyframes pulse { 0%,100%{opacity:0.6} 50%{opacity:1} }
+
+/* ─── INTRO ─── */
+#intro {
+  position: fixed; inset: 0;
+  background: var(--bg);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  z-index: 100; gap: 18px;
+  padding: 40px; text-align: center;
+}
+.intro-symbol { font-size: 72px; opacity:0; animation: fadeIn 1s 0.3s forwards; filter: sepia(1) brightness(0.9); }
+.intro-title {
+  font-family: 'Cinzel', serif; font-weight: 900;
+  font-size: clamp(24px,5vw,46px);
+  color: var(--gold-bright);
+  text-shadow: 0 2px 20px rgba(184,134,11,0.6);
+  letter-spacing: 4px;
+  opacity:0; animation: fadeIn 0.8s 0.9s forwards;
+}
+.intro-sub { color: var(--aged); font-style: italic; font-size: clamp(14px,2vw,18px); letter-spacing: 1px; opacity:0; animation: fadeIn 0.8s 1.5s forwards; }
+.intro-divider { width: 200px; height: 1px; background: linear-gradient(to right, transparent, var(--gold), transparent); opacity:0; animation: fadeIn 0.8s 2s forwards; }
+.intro-text { max-width: 520px; color: #8a7055; font-size: 14px; line-height: 1.9; opacity:0; animation: fadeIn 0.8s 2.3s forwards; }
+#enter-btn {
+  padding: 14px 44px; background: transparent;
+  border: 1px solid var(--gold); color: var(--gold-bright);
+  font-family: 'Cinzel', serif; font-size: 13px; letter-spacing: 4px;
+  cursor: pointer; transition: all 0.3s;
+  opacity:0; animation: fadeIn 0.8s 3s forwards;
+  box-shadow: 0 0 20px rgba(184,134,11,0.2), inset 0 0 20px rgba(184,134,11,0.05);
+}
+#enter-btn:hover { background: var(--gold); color: var(--bg); box-shadow: 0 0 30px rgba(184,134,11,0.5); }
+
+/* ─── MAIN ─── */
+#main { display: none; }
+.scroll-wrapper { max-width: 860px; margin: 0 auto; padding: 40px 20px 80px; }
+
+.torn-top { height: 40px; background: var(--bg); position: relative; overflow: hidden; }
+.torn-top::after {
+  content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 40px;
+  background: #d4bc82;
+  clip-path: polygon(0% 100%, 2% 40%, 5% 80%, 8% 20%, 11% 70%, 14% 30%, 17% 75%, 20% 15%, 23% 60%, 26% 25%, 29% 65%, 32% 10%, 35% 55%, 38% 20%, 41% 70%, 44% 30%, 47% 65%, 50% 15%, 53% 60%, 56% 25%, 59% 70%, 62% 20%, 65% 65%, 68% 30%, 71% 75%, 74% 15%, 77% 60%, 80% 25%, 83% 70%, 86% 20%, 89% 65%, 92% 35%, 95% 75%, 98% 20%, 100% 50%, 100% 100%);
+}
+.scroll-body { padding: 50px 55px 60px; position: relative; min-height: 400px; }
+.scroll-body::after {
+  content: ''; position: absolute; top: 30px; right: 40px;
+  width: 120px; height: 80px;
+  background: radial-gradient(ellipse, rgba(100,50,0,0.25) 0%, transparent 70%);
+  border-radius: 50%; pointer-events: none;
+}
+.torn-bottom { height: 40px; background: var(--bg); position: relative; overflow: hidden; }
+.torn-bottom::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 40px;
+  background: #c8ad72;
+  clip-path: polygon(0% 0%, 3% 60%, 6% 20%, 9% 80%, 12% 30%, 15% 75%, 18% 25%, 21% 70%, 24% 15%, 27% 65%, 30% 30%, 33% 80%, 36% 20%, 39% 65%, 42% 25%, 45% 70%, 48% 20%, 51% 75%, 54% 30%, 57% 70%, 60% 15%, 63% 60%, 66% 25%, 69% 75%, 72% 30%, 75% 65%, 78% 15%, 81% 70%, 84% 25%, 87% 70%, 90% 20%, 93% 65%, 96% 25%, 100% 60%, 100% 0%);
+}
+
+/* ─── TYPOGRAPHY ─── */
+.doc-title { font-family: 'Cinzel', serif; font-weight: 900; font-size: clamp(20px, 4vw, 34px); color: var(--rust); text-align: center; letter-spacing: 3px; margin-bottom: 4px; text-shadow: 1px 1px 3px rgba(139,37,0,0.3); }
+.doc-subtitle { font-family: 'Cinzel', serif; font-weight: 400; font-size: 12px; letter-spacing: 5px; color: var(--stone); text-align: center; margin-bottom: 6px; }
+.ornament { text-align: center; font-size: 20px; color: var(--gold); margin: 10px 0; letter-spacing: 8px; }
+.section-rule { border: none; border-top: 1px solid var(--aged); margin: 24px 0; position: relative; }
+.section-rule::before { content: '◆'; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); background: #d4bc82; padding: 0 10px; color: var(--gold); font-size: 12px; }
+.field-note { font-style: italic; font-size: 15px; color: var(--ink-faded); line-height: 1.9; border-left: 3px solid var(--aged); padding-left: 16px; margin: 16px 0; }
+.clue-label { font-family: 'Cinzel', serif; font-weight: 600; font-size: 11px; letter-spacing: 4px; color: var(--rust); text-transform: uppercase; margin: 28px 0 10px; }
+
+/* ─── PUZZLE 1: RUNIC TABLET ─── */
+.tablet {
+  background: linear-gradient(145deg, #3d2e1a, #2c1f0e, #3a2815);
+  border: 2px solid #5c3d1e; border-radius: 4px;
+  padding: 28px 24px; margin: 12px 0; position: relative;
+  box-shadow: inset 0 2px 10px rgba(0,0,0,0.5), 0 4px 20px rgba(0,0,0,0.4);
+}
+.tablet::before { content: ''; position: absolute; inset: 6px; border: 1px solid rgba(180,130,60,0.2); border-radius: 2px; pointer-events: none; }
+
+/* Roman numeral border ring */
+.tablet-ring {
+  text-align: center;
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  letter-spacing: 6px;
+  color: rgba(180,130,60,0.5);
+  margin-bottom: 14px;
+  border-top: 1px solid rgba(180,130,60,0.2);
+  border-bottom: 1px solid rgba(180,130,60,0.2);
+  padding: 6px 0;
+}
+
+.rune-line { font-size: 28px; letter-spacing: 8px; color: #d4a050; text-shadow: 0 0 10px rgba(180,130,30,0.5); text-align: center; margin: 6px 0; user-select: all; }
+.rune-translation { display: grid; grid-template-columns: repeat(auto-fill, 44px); gap: 6px; margin: 16px 0 8px; justify-content: center; }
+.rune-card { background: rgba(180,130,40,0.12); border: 1px solid rgba(180,130,40,0.3); border-radius: 3px; padding: 8px 4px; text-align: center; }
+.rune-char { font-size: 18px; color: #d4a050; display: block; }
+.rune-val { font-size: 10px; color: #8a6030; font-family: 'Cinzel', serif; letter-spacing: 1px; }
+
+/* shifted legend note */
+.legend-note {
+  font-size: 11px; font-style: italic; color: rgba(180,130,60,0.6);
+  text-align: center; margin-top: 10px; letter-spacing: 1px;
+}
+
+/* ─── PUZZLE 2: CARTOUCHE ─── */
+.cartouche-wrap { display: flex; justify-content: center; margin: 14px 0; }
+.cartouche {
+  border: 3px solid var(--gold); border-radius: 40px;
+  padding: 16px 32px; display: inline-flex; gap: 18px; align-items: center;
+  background: rgba(180,130,11,0.08);
+  box-shadow: 0 0 0 2px rgba(180,130,11,0.2), inset 0 0 20px rgba(180,130,11,0.05);
+  position: relative;
+}
+.cartouche::before, .cartouche::after { content: ''; position: absolute; top: 50%; width: 8px; height: 30px; background: var(--gold); transform: translateY(-50%); border-radius: 2px; }
+.cartouche::before { left: -5px; }
+.cartouche::after { right: -5px; }
+
+/* position markers above each glyph */
+.cartouche-glyphs { display: flex; gap: 18px; align-items: flex-end; }
+.glyph-slot { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.glyph-pos { font-family: 'Cinzel', serif; font-size: 9px; color: rgba(184,134,11,0.5); letter-spacing: 1px; }
+.hiero { font-size: 32px; cursor: default; transition: transform 0.2s; }
+
+.hiero-key { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin: 12px 0; }
+.hkey { border: 1px solid var(--parch-dark); padding: 8px 6px; text-align: center; background: rgba(255,255,255,0.3); border-radius: 2px; }
+.hkey .sym { font-size: 20px; }
+.hkey .letter { font-size: 10px; color: var(--rust); font-family: 'Cinzel', serif; letter-spacing: 1px; }
+
+/* ─── PUZZLE 3: STAR MAP ─── */
+.star-map {
+  background: radial-gradient(ellipse at center, #0d1a2e 0%, #060d18 100%);
+  border: 2px solid var(--stone); border-radius: 50%;
+  width: 300px; height: 300px; margin: 16px auto;
+  position: relative;
+  box-shadow: 0 0 30px rgba(0,0,0,0.6), inset 0 0 40px rgba(0,50,100,0.3);
+  overflow: hidden;
+}
+.star { position: absolute; background: #fff; border-radius: 50%; }
+.constellation-line { position: absolute; background: rgba(150,200,255,0.25); height: 1px; transform-origin: left center; }
+.star-label { position: absolute; font-family: 'Cinzel', serif; font-size: 9px; color: rgba(200,180,100,0.7); white-space: nowrap; text-shadow: 0 0 4px rgba(200,180,100,0.5); }
+
+/* faint region outlines for constellations */
+.const-region {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.star-clue-box {
+  background: rgba(30,15,5,0.7); border: 1px solid var(--aged);
+  padding: 14px 18px; font-size: 13px; color: var(--parch);
+  line-height: 1.9; margin: 12px 0; font-style: italic;
+}
+
+/* ─── HINT ─── */
+.hint-btn {
+  background: none; border: 1px solid var(--aged); color: var(--stone);
+  font-family: 'Crimson Text', serif; font-style: italic; font-size: 13px;
+  padding: 5px 14px; cursor: pointer; transition: all 0.25s; margin-top: 6px;
+}
+.hint-btn:hover { border-color: var(--gold); color: var(--gold); }
+.hint-box {
+  display: none; background: rgba(44,26,8,0.08); border-left: 3px solid var(--gold);
+  padding: 10px 14px; font-style: italic; font-size: 13px;
+  color: var(--ink-faded); line-height: 1.8; margin-top: 8px;
+}
+
+/* ─── STAMP ─── */
+.classify-stamp {
+  position: absolute; top: 30px; right: 30px;
+  border: 3px solid var(--rust); color: var(--rust);
+  font-family: 'Cinzel', serif; font-weight: 700;
+  font-size: 11px; letter-spacing: 4px; padding: 5px 10px;
+  transform: rotate(-12deg); opacity: 0.7; pointer-events: none;
+  text-shadow: 0 0 6px rgba(139,37,0,0.3);
+}
+
+/* ─── ANSWER PANEL ─── */
+.answer-panel { margin-top: 40px; border: 1px solid var(--aged); padding: 28px 30px; background: rgba(44,26,8,0.06); position: relative; }
+.answer-panel::before { content: 'CATALOGUE ENTRY'; position: absolute; top: -10px; left: 20px; background: #d4bc82; padding: 0 12px; font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 3px; color: var(--stone); }
+.code-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: 16px 0; }
+.code-input {
+  background: rgba(255,255,255,0.5); border: 1px solid var(--aged);
+  border-bottom: 2px solid var(--ink-faded);
+  font-family: 'Cinzel', serif; font-weight: 600;
+  font-size: 18px; color: var(--ink); padding: 10px 8px; text-align: center;
+  letter-spacing: 3px; text-transform: uppercase; outline: none; transition: all 0.25s; border-radius: 2px;
+}
+.code-input:focus { border-color: var(--gold); background: rgba(255,255,255,0.8); box-shadow: 0 2px 8px rgba(184,134,11,0.2); }
+.code-input.v-ok { border-bottom-color: var(--moss); background: rgba(74,92,47,0.1); }
+.code-input.v-bad { border-bottom-color: var(--rust); animation: shake 0.4s; }
+.sep { font-size: 22px; color: var(--stone); font-family: 'Cinzel', serif; }
+.submit-btn {
+  margin-top: 12px; padding: 12px 34px;
+  background: transparent; border: 1px solid var(--gold);
+  color: var(--gold-bright); font-family: 'Cinzel', serif;
+  font-size: 12px; letter-spacing: 3px; cursor: pointer; transition: all 0.3s;
+}
+.submit-btn:hover { background: var(--gold); color: var(--bg); }
+#result {
+  display: none; margin-top: 14px; padding: 10px 14px;
+  border: 1px solid; font-size: 13px; line-height: 1.8;
+  font-style: italic;
+}
+#result.err { border-color: var(--rust); color: var(--rust); background: rgba(139,37,0,0.07); }
+#result.ok  { border-color: var(--moss); color: var(--moss); background: rgba(74,92,47,0.07); }
+
+/* ─── SUCCESS OVERLAY ─── */
+#victory {
+  display: none; position: fixed; inset: 0;
+  background: radial-gradient(ellipse at center, #1a0e05 0%, #0a0602 100%);
+  z-index: 200; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center; padding: 40px; gap: 20px;
+}
+.v-icon { font-size: 80px; animation: glow 3s infinite; }
+.v-title { font-family: 'Cinzel', serif; font-weight: 900; font-size: clamp(26px,5vw,50px); color: var(--gold-bright); text-shadow: 0 0 30px rgba(184,134,11,0.7); letter-spacing: 4px; animation: glow 3s infinite; }
+.v-code { font-family: 'Cinzel', serif; font-weight: 600; font-size: clamp(20px,4vw,36px); color: var(--parch); letter-spacing: 8px; border: 1px solid var(--gold); padding: 18px 36px; margin: 6px 0; box-shadow: 0 0 30px rgba(184,134,11,0.3); }
+.v-msg { color: var(--aged); font-style: italic; font-size: 15px; max-width: 480px; line-height: 2; }
+
+/* ─── DUST ─── */
+.dust { position: fixed; pointer-events: none; width: 3px; height: 3px; border-radius: 50%; background: rgba(200,169,100,0.6); animation: dustFloat 4s ease-in infinite; }
+
+/* ─── ATTEMPT COUNTER ─── */
+#att { position: fixed; bottom: 18px; right: 20px; font-family: 'Cinzel', serif; font-size: 11px; color: var(--stone); letter-spacing: 2px; }
+
+/* ─── DECODER GRID (Puzzle 1 grid layout) ─── */
+.shift-instruction {
+  background: rgba(0,0,0,0.3);
+  border: 1px solid rgba(180,130,60,0.3);
+  padding: 10px 16px;
+  margin: 12px 0 0;
+  font-size: 12px;
+  color: rgba(212,160,80,0.8);
+  font-style: italic;
+  text-align: center;
+  letter-spacing: 1px;
+  line-height: 1.7;
+}
+
+/* ─── CARTOUCHE ANNOTATION ─── */
+.cartouche-annotation {
+  text-align: center;
+  font-size: 12px;
+  color: var(--stone);
+  font-style: italic;
+  margin-top: 8px;
+  line-height: 1.8;
+}
+
+/* ─── PAPYRUS STRIP for puzzle 2 clue ─── */
+.papyrus-strip {
+  background: linear-gradient(90deg, rgba(180,140,60,0.15), rgba(180,140,60,0.08), rgba(180,140,60,0.15));
+  border-top: 1px dashed var(--aged);
+  border-bottom: 1px dashed var(--aged);
+  padding: 10px 20px;
+  font-size: 13px;
+  color: var(--ink-faded);
+  font-style: italic;
+  line-height: 1.8;
+  margin: 10px 0;
+  text-align: center;
+}
+
+/* ─── STAR MAP CAPTION ─── */
+.star-band {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  margin: 8px 0 14px;
+  font-size: 12px;
+  font-family: 'Cinzel', serif;
+  letter-spacing: 2px;
+}
+.star-band span { display: flex; align-items: center; gap: 6px; }
+.star-swatch { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+
+/* ─── NICHED NUMERAL ─── */
+.roman-badge {
+  display: inline-block;
+  font-family: 'Cinzel', serif;
+  font-size: 13px;
+  color: rgba(212,160,80,0.9);
+  border: 1px solid rgba(212,160,80,0.4);
+  padding: 2px 8px;
+  border-radius: 2px;
+  letter-spacing: 2px;
+}
+
+/* margin helpers */
+.mt8 { margin-top: 8px; }
+.mb8 { margin-bottom: 8px; }
+</style>
+</head>
+<body>
+
+<!-- ═══ INTRO ═══ -->
+<div id="intro">
+  <div class="intro-symbol">𓂀</div>
+  <div class="intro-title">THE CAIRO DOSSIER</div>
+  <div class="intro-sub">Archaeological Field Research — Site 7 — Restricted Access</div>
+  <div class="intro-divider" style="width:200px;height:1px;background:linear-gradient(to right,transparent,var(--gold),transparent)"></div>
+  <p class="intro-text">
+    Dr. Harlow's notes have gone missing. Three fragmented artefacts remain, 
+    each concealing one part of a vault catalogue code. 
+    The ancients did not make their secrets easy — each seal is layered. 
+    Think carefully. Trust the documents.
+  </p>
+  <button id="enter-btn" onclick="reveal()">OPEN THE DOSSIER</button>
+</div>
+
+<!-- ═══ MAIN ═══ -->
+<div id="main">
+  <div class="scroll-wrapper">
+    <div class="torn-top"></div>
+    <div class="scroll-body parchment">
+
+      <div class="classify-stamp">RESTRICTED</div>
+
+      <div class="doc-title">EXCAVATION FIELD NOTES</div>
+      <div class="doc-subtitle">CAIRO — SECTOR VII — 1924</div>
+      <div class="ornament">— 𓂀 𓋹 𓂀 —</div>
+
+      <div class="field-note">
+        "Three seals guard the vault. I've decoded enough to know each requires more than 
+        a simple lookup — the ancients layered their ciphers. God help whoever reads this after me." — E.H.
+      </div>
+
+      <div class="section-rule"></div>
+      <div class="clue-label">Artefact I — The Stone Tablet (Segment 1 · 4 letters)</div>
+      <p style="font-size:14px;color:var(--ink-faded);line-height:1.9;margin-bottom:12px">
+        Dr. Harlow chiselled a runic legend beside the tablet — but noted the scribes used a 
+        <em>shifted cipher</em>. The shift value is carved as a Roman numeral into the tablet's border ring. 
+        Use the legend, then correct for the shift to recover the true letters.
+      </p>
+
+      <div class="tablet">
+        <div class="tablet-ring">· I · II · III · I · II · III · I · II · III ·</div>
+
+        <div style="font-size:11px;letter-spacing:3px;color:#8a6030;text-align:center;margin-bottom:14px;font-family:'Cinzel',serif">RUNIC LEGEND — RAW VALUES</div>
+        <div class="rune-translation">
+          <div class="rune-card"><span class="rune-char">ᚠ</span><span class="rune-val">A</span></div>
+          <div class="rune-card"><span class="rune-char">ᚢ</span><span class="rune-val">B</span></div>
+          <div class="rune-card"><span class="rune-char">ᚦ</span><span class="rune-val">C</span></div>
+          <div class="rune-card"><span class="rune-char">ᚨ</span><span class="rune-val">D</span></div>
+          <div class="rune-card"><span class="rune-char">ᚩ</span><span class="rune-val">E</span></div>
+          <div class="rune-card"><span class="rune-char">ᚫ</span><span class="rune-val">F</span></div>
+          <div class="rune-card"><span class="rune-char">ᚬ</span><span class="rune-val">G</span></div>
+          <div class="rune-card"><span class="rune-char">ᚭ</span><span class="rune-val">H</span></div>
+          <div class="rune-card"><span class="rune-char">ᚱ</span><span class="rune-val">I</span></div>
+          <div class="rune-card"><span class="rune-char">ᚲ</span><span class="rune-val">J</span></div>
+          <div class="rune-card"><span class="rune-char">ᚷ</span><span class="rune-val">K</span></div>
+          <div class="rune-card"><span class="rune-char">ᚹ</span><span class="rune-val">L</span></div>
+          <div class="rune-card"><span class="rune-char">ᚺ</span><span class="rune-val">M</span></div>
+          <div class="rune-card"><span class="rune-char">ᚻ</span><span class="rune-val">N</span></div>
+          <div class="rune-card"><span class="rune-char">ᚼ</span><span class="rune-val">O</span></div>
+          <div class="rune-card"><span class="rune-char">ᚽ</span><span class="rune-val">P</span></div>
+          <div class="rune-card"><span class="rune-char">ᚾ</span><span class="rune-val">Q</span></div>
+          <div class="rune-card"><span class="rune-char">ᚿ</span><span class="rune-val">R</span></div>
+          <div class="rune-card"><span class="rune-char">ᛀ</span><span class="rune-val">S</span></div>
+          <div class="rune-card"><span class="rune-char">ᛁ</span><span class="rune-val">T</span></div>
+          <div class="rune-card"><span class="rune-char">ᛂ</span><span class="rune-val">U</span></div>
+          <div class="rune-card"><span class="rune-char">ᛃ</span><span class="rune-val">V</span></div>
+          <div class="rune-card"><span class="rune-char">ᛄ</span><span class="rune-val">W</span></div>
+          <div class="rune-card"><span class="rune-char">ᛅ</span><span class="rune-val">X</span></div>
+          <div class="rune-card"><span class="rune-char">ᛆ</span><span class="rune-val">Y</span></div>
+          <div class="rune-card"><span class="rune-char">ᛇ</span><span class="rune-val">Z</span></div>
+        </div>
+
+        <div style="margin-top:18px;text-align:center;font-size:11px;letter-spacing:3px;color:#8a6030;font-family:'Cinzel',serif;margin-bottom:10px">INSCRIBED SEQUENCE</div>
+        <div class="rune-line">ᚩ · ᛇ · ᛄ · ᚫ</div>
+
+        <div class="shift-instruction">
+          "The border ring marks the cipher depth. Count the repeating numeral — 
+          that is how far each raw letter must be walked back through the alphabet."
+        </div>
+      </div>
+
+      <button class="hint-btn" onclick="th(1)">† Show Archaeologist's Note</button>
+      <div id="hint1" class="hint-box">
+        Step 1 — Look up each rune in the legend to get its raw letter (e.g. ᚠ→E).<br>
+        Step 2 — The border ring shows a repeating Roman numeral. Count how many positions it represents.<br>
+        Step 3 — Shift each raw letter <em>backward</em> that many steps in the alphabet (A↔Z wraps). 
+        That gives you the true letter for each rune. Four runes = four true letters = Segment 1.
+      </div>
+
+      <div class="section-rule"></div>
+
+      <div class="clue-label">Artefact II — The Royal Cartouche (Segment 2 · 2 chars)</div>
+      <p style="font-size:14px;color:var(--ink-faded);line-height:1.9;margin-bottom:12px">
+        A royal cartouche bearing four hieroglyphs was pressed into the burial wax. 
+        Dr. Harlow's margin note warns that Egyptian royal scribes hid decoys inside 
+        cartouches — not every glyph belongs to the true name.
+      </p>
+
+      <!-- Harlow's papyrus annotation -->
+      <div class="papyrus-strip">
+        "Per the Luxor Codex: scribes placed decoys at the <em>odd</em> positions of a royal cartouche. 
+        The true seal glyphs occupy the <em>even</em> strokes only — 2nd and 4th."
+        <br><span style="font-size:11px;color:var(--stone);letter-spacing:1px">— margin note, E.H.</span>
+      </div>
+
+      <!-- Rosetta key — more glyphs, but only 8 and F are needed -->
+      <div style="font-size:11px;letter-spacing:3px;color:var(--stone);text-align:center;margin:14px 0 8px;font-family:'Cinzel',serif">ROSETTA KEY — GLYPH REFERENCE</div>
+      <div class="hiero-key">
+        <div class="hkey"><div class="sym">𓃀</div><div class="letter">A</div></div>
+        <div class="hkey"><div class="sym">𓅓</div><div class="letter">B</div></div>
+        <div class="hkey"><div class="sym">𓆑</div><div class="letter">F</div></div>
+        <div class="hkey"><div class="sym">𓇋</div><div class="letter">G</div></div>
+        <div class="hkey"><div class="sym">𓉔</div><div class="letter">H</div></div>
+        <div class="hkey"><div class="sym">𓏏</div><div class="letter">T</div></div>
+        <div class="hkey"><div class="sym">𓂋</div><div class="letter">R</div></div>
+        <div class="hkey"><div class="sym">𓋴</div><div class="letter">S</div></div>
+        <div class="hkey"><div class="sym">𓏺</div><div class="letter">1</div></div>
+        <div class="hkey"><div class="sym">𓏻</div><div class="letter">2</div></div>
+        <div class="hkey"><div class="sym">𓏼</div><div class="letter">3</div></div>
+        <div class="hkey"><div class="sym">𓏽</div><div class="letter">4</div></div>
+        <div class="hkey"><div class="sym">𓏾</div><div class="letter">5</div></div>
+        <div class="hkey"><div class="sym">𓏿</div><div class="letter">6</div></div>
+        <div class="hkey"><div class="sym">𓐀</div><div class="letter">7</div></div>
+        <div class="hkey"><div class="sym">𓐁</div><div class="letter">8</div></div>
+        <div class="hkey"><div class="sym">𓂧</div><div class="letter">9</div></div>
+        <div class="hkey"><div class="sym">𓄿</div><div class="letter">0</div></div>
+        <div class="hkey"><div class="sym">𓈖</div><div class="letter">M</div></div>
+        <div class="hkey"><div class="sym">𓆛</div><div class="letter">N</div></div>
+      </div>
+
+      <p style="font-size:13px;color:var(--stone);font-style:italic;margin:12px 0 6px">The cartouche inscription — four glyphs in sequence:</p>
+      <div class="cartouche-wrap">
+        <div class="cartouche">
+          <div class="cartouche-glyphs">
+            <div class="glyph-slot"><span class="glyph-pos">I</span><span class="hiero">𓉔</span></div>
+            <div class="glyph-slot"><span class="glyph-pos">II</span><span class="hiero">𓐁</span></div>
+            <div class="glyph-slot"><span class="glyph-pos">III</span><span class="hiero">𓏏</span></div>
+            <div class="glyph-slot"><span class="glyph-pos">IV</span><span class="hiero">𓆑</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="cartouche-annotation">
+        Positions marked I · II · III · IV<br>
+        Apply Dr. Harlow's rule to select the relevant glyphs.
+      </div>
+
+      <button class="hint-btn" onclick="th(2)">† Show Archaeologist's Note</button>
+      <div id="hint2" class="hint-box">
+        The margin note tells you which positions to keep (even = II and IV) and which are decoys (odd = I and III). 
+        Decode only the 2nd and 4th hieroglyphs using the Rosetta Key. 
+        Write the results left to right — that is your second segment.
+      </div>
+
+      <div class="section-rule"></div>
+
+      <div class="clue-label">Artefact III — The Celestial Papyrus (Segment 3 · 3 digits)</div>
+      <p style="font-size:14px;color:var(--ink-faded);line-height:1.9;margin-bottom:12px">
+        A star chart was found rolled inside the canopic jar. 
+        Three ancient beasts are mapped across the sky — each beast is drawn as a constellation. 
+        Count the stars that form each beast, reading from west to east. 
+        The three counts, written together, form the third seal.
+      </p>
+
+      <div class="star-map" id="starmap"></div>
+
+      <!-- Legend: color cues only, no explicit count hints -->
+      <div class="star-band">
+        <span><span class="star-swatch" style="background:#ffcc44;box-shadow:0 0 4px #ffcc44"></span> <span style="color:rgba(200,180,100,0.7);font-size:11px">WEST BEAST</span></span>
+        <span><span class="star-swatch" style="background:#88ccff;box-shadow:0 0 4px #88ccff"></span> <span style="color:rgba(140,190,255,0.7);font-size:11px">CENTRE BEAST</span></span>
+        <span><span class="star-swatch" style="background:#ff9944;box-shadow:0 0 4px #ff9944"></span> <span style="color:rgba(255,170,80,0.7);font-size:11px">EAST BEAST</span></span>
+      </div>
+
+      <div class="star-clue-box">
+        "Three beasts keep watch over the vault. The western creature stands alone. 
+        The eastern creature mirrors it. Only the central beast draws lines between its stars — 
+        count them all. Read west to east; concatenate the three counts."
+      </div>
+
+      <button class="hint-btn" onclick="th(3)">† Show Archaeologist's Note</button>
+      <div id="hint3" class="hint-box">
+        Each colour on the star chart corresponds to one beast / constellation. 
+        Count how many stars of each colour exist: gold (west), blue (centre), orange (east). 
+        Write the three counts together — no spaces, no separators — to form a 3-digit number. 
+        That is your third segment.
+      </div>
+
+      <div class="section-rule"></div>
+
+      <!-- ═══ ASSEMBLY ═══ -->
+      <div class="field-note" style="margin-top:8px">
+        "Assemble the three seals in order. The catalogue code follows the format 
+        carved on the outer chamber wall: <strong>XXXX · XX · XXX</strong>"
+      </div>
+
+      <!-- ═══ ANSWER PANEL ═══ -->
+      <div class="answer-panel">
+        <p style="font-size:13px;color:var(--ink-faded);line-height:1.8;margin-bottom:16px">
+          Enter the three decoded segments below. Uppercase letters and numerals only.
+        </p>
+        <div class="code-row">
+          <input class="code-input" id="c1" maxlength="4" placeholder="····" style="width:90px" oninput="this.value=this.value.toUpperCase()" />
+          <span class="sep">·</span>
+          <input class="code-input" id="c2" maxlength="2" placeholder="··" style="width:66px" oninput="this.value=this.value.toUpperCase()" />
+          <span class="sep">·</span>
+          <input class="code-input" id="c3" maxlength="3" placeholder="···" style="width:78px" oninput="this.value=this.value.toUpperCase()" />
+        </div>
+        <button class="submit-btn" onclick="_v9k2()">AUTHENTICATE CATALOGUE CODE</button>
+        <div id="result"></div>
+      </div>
+
+    </div><!-- /scroll-body -->
+    <div class="torn-bottom"></div>
+  </div>
+</div><!-- /main -->
+
+<!-- ═══ VICTORY ═══ -->
+<div id="victory" style="display:none;flex-direction:column;align-items:center;justify-content:center;">
+  <div class="v-icon">𓋹</div>
+  <div class="v-title">THE VAULT IS OPEN</div>
+  <div class="v-code" id="vc"></div>
+  <div class="v-msg">
+    The catalogue code has been authenticated.<br>
+    Seek the chamber marked with this inscription.<br>
+    <span style="font-size:12px;color:var(--stone);margin-top:8px;display:block">— Dr. Harlow's final note —</span>
+  </div>
+</div>
+
+<div id="att">ATTEMPTS: <span id="an">0</span></div>
+
+<script>
+// ─── STAR MAP RENDER ───
+(function(){
+  const map = document.getElementById('starmap');
+  const W = 300, H = 300;
+
+  const stars = [
+    [12, 35, 1],   // west star 1 (index 0)
+    [18, 50, 1],   // west star 2 (index 1)
+    [16, 65, 1],   // west star 3 (index 2)
+    [48, 40, 2],   // centre star 1 (index 3)
+    [52, 55, 2],   // centre star 2 (index 4)
+    [78, 30, 3],   // east star 1 (index 5)
+    [76, 45, 3],   // east star 2 (index 6)
+    [85, 58, 3],   // east star 3 (index 7)
+    [80, 70, 3],   // east star 4 (index 8)
+  ];
+
+  // Constellation lines for all groups
+  const lines = [
+    // West group (indices 0,1,2)
+    [0,1],[1,2],
+    // Centre group (indices 3,4)
+    [3,4],
+    // East group (indices 5,6,7,8)
+    [5,6],[6,7],[7,8]
+  ];
+  const colors = {1:'#ffcc44', 2:'#88ccff', 3:'#ff9944'};
+
+  // Faint region labels
+  const regions = [
+    {x:6, y:40, t:'WEST'},
+    {x:38, y:6,  t:'CENTRE'},
+    {x:72, y:32, t:'EAST'},
+  ];
+
+  // Draw constellation lines first
+  lines.forEach(([a,b]) => {
+    const sa = stars[a], sb = stars[b];
+    const x1 = sa[0]/100*W, y1 = sa[1]/100*H;
+    const x2 = sb[0]/100*W, y2 = sb[1]/100*H;
+    const len = Math.hypot(x2-x1, y2-y1);
+    const angle = Math.atan2(y2-y1, x2-x1)*180/Math.PI;
+    const ln = document.createElement('div');
+    ln.className = 'constellation-line';
+    ln.style.cssText = `left:${x1}px;top:${y1}px;width:${len}px;transform:rotate(${angle}deg);background:rgba(100,160,255,0.22)`;
+    map.appendChild(ln);
+  });
+
+  // Draw stars
+  stars.forEach(([px,py,grp]) => {
+    const x = px/100*W, y = py/100*H;
+    const sz = grp === 2 ? 7 : 6;
+    const col = colors[grp];
+    const s = document.createElement('div');
+    s.className = 'star';
+    s.style.cssText = `left:${x-sz/2}px;top:${y-sz/2}px;width:${sz}px;height:${sz}px;background:${col};box-shadow:0 0 ${sz*2}px ${col}`;
+    map.appendChild(s);
+  });
+
+  // Faint region labels
+  regions.forEach(({x,y,t}) => {
+    const lb = document.createElement('div');
+    lb.className = 'star-label';
+    lb.textContent = t;
+    lb.style.cssText = `left:${x/100*W}px;top:${y/100*H}px;font-size:8px;letter-spacing:2px;color:rgba(200,180,100,0.28)`;
+    map.appendChild(lb);
+  });
+})();
+
+// ─── INTRO ───
+function reveal(){
+  document.getElementById('intro').style.display='none';
+  const m=document.getElementById('main');
+  m.style.display='block'; m.style.animation='fadeIn 0.8s forwards';
+  spawnDust();
+}
+function spawnDust(){
+  for(let i=0;i<8;i++){
+    setTimeout(()=>{
+      const d=document.createElement('div');
+      d.className='dust';
+      d.style.cssText=`left:${Math.random()*100}vw;top:${70+Math.random()*20}vh;animation-delay:${Math.random()*3}s;animation-duration:${3+Math.random()*4}s`;
+      document.body.appendChild(d);
+      setTimeout(()=>d.remove(),7000);
+    },i*400);
+  }
+}
+function th(n){
+  const el=document.getElementById('hint'+n);
+  el.style.display=el.style.display==='block'?'none':'block';
+}
+
+// ─── VERIFICATION ENGINE ───
+const _s = (()=>{
+  const _c = [107,104,57,50,120,80,35,109,81,55,33,118,76,110];
+  return _c.map(x=>String.fromCharCode(x)).join('');
+})();
+const _k = [0x4B,0x9F,0x2C,0xE1,0x57,0xA3,0x8D,0x1E];
+const _H = [
+  [124,249,31,211,98,149,186,47,45,254,26,217,96,154,190,45,40,175,31,132,51,155,185,45,45,250,21,211,49,194,180,40,127,252,79,213,99,193,235,125,122,168,72,133,100,144,185,44,40,254,78,212,102,147,239,41,47,250,26,211,97,199,188,122],
+  [122,169,72,208,51,145,233,39,124,172,74,209,100,148,238,41,127,175,24,214,50,194,232,43,114,175,77,214,51,199,190,40,127,171,21,135,110,151,233,41,47,175,29,211,53,146,185,125,115,251,27,215,102,149,239,43,114,172,79,130,50,148,185,122],
+  [126,174,28,217,101,144,232,123,45,168,79,217,51,155,191,40,41,169,20,216,102,148,180,122,124,250,24,215,50,150,191,46,120,170,27,217,101,151,187,40,42,254,20,213,96,146,181,44,114,174,77,133,51,146,190,39,114,252,21,133,103,198,191,46]
+];
+function _xr(arr){ return arr.map((v,i)=>String.fromCharCode(v^_k[i%_k.length])).join(''); }
+async function _hx(msg){
+  const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(msg));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+let _q7=0;
+async function _v9k2(){
+  _q7++;
+  document.getElementById('an').textContent=_q7;
+  const _i=[
+    document.getElementById('c1').value.trim().toUpperCase(),
+    document.getElementById('c2').value.trim().toUpperCase(),
+    document.getElementById('c3').value.trim().toUpperCase()
+  ];
+  const _r=document.getElementById('result');
+  const _ids=['c1','c2','c3'];
+  const _computed=await Promise.all(_i.map(v=>_hx(v+_s)));
+  const _chk=_H.map((h,i)=>_computed[i]===_xr(h));
+  _ids.forEach((id,i)=>{
+    const el=document.getElementById(id);
+    el.classList.remove('v-ok','v-bad');
+    if(_i[i].length>0) el.classList.add(_chk[i]?'v-ok':'v-bad');
+  });
+  if(_chk.every(Boolean)){
+    _r.style.display='none';
+    setTimeout(()=>{
+      const ov=document.getElementById('victory');
+      ov.style.display='flex';
+      document.getElementById('vc').textContent=_i.join(' ');
+    },400);
+  } else {
+    const _bad=['Segment 1 (Tablet)','Segment 2 (Cartouche)','Segment 3 (Star Map)']
+      .filter((_,i)=>!_chk[i]);
+    _r.className='err'; _r.style.display='block';
+    _r.innerHTML=`Verification failed — incorrect: <em>${_bad.join(', ')}</em>.<br>Re-examine the artefacts.${_q7>=5?' Hints available below each section.':''}`;
+  }
+}
+</script>
+</body>
+</html>
