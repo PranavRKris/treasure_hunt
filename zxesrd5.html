@@ -398,12 +398,12 @@
       We intercepted an encoded message. The enemy rotates each letter forward by a fixed number.<br>
       The decoded phrase is a common two-word phrase. Extract the <strong style="color:var(--amber)">two capitalised initials</strong> in the decoded message — that's your first segment.
     </p>
-    <div class="cipher-box">KX LVMZX</div>
+    <div class="cipher-box">GWTPJS XNLSFQ</div>
     <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px">
       <button class="hint-toggle" onclick="toggleHint('h1')">[ HINT ]</button>
     </div>
     <div id="h1" class="hint-box">
-      In a Caesar cipher, every letter shifts the same amount. Try shift 7 — or count backwards from K. The phrase you're looking for is something you might say before a meeting. Initials = first letter of each word.
+      In a Caesar cipher, every letter shifts the same amount. Try shift 5 — or count backwards from G. The phrase you're looking for is something you might say before a meeting. Initials = first letter of each word.
     </div>
 
     <!-- ====== LAYER 2: SYMBOL DECODER ====== -->
@@ -413,19 +413,27 @@
       The decoded sequence is a <strong style="color:var(--amber)">2-digit number</strong> — that's your second segment.
     </p>
 
-    <div class="symbol-grid">
-      <div class="sym-cell">⬟<div class="sym-label">1</div></div>
-      <div class="sym-cell">⬡<div class="sym-label">2</div></div>
-      <div class="sym-cell">⬢<div class="sym-label">3</div></div>
-      <div class="sym-cell">⬣<div class="sym-label">4</div></div>
-      <div class="sym-cell">⬤<div class="sym-label">5</div></div>
-      <div class="sym-cell">⬧<div class="sym-label">6</div></div>
-      <div class="sym-cell">⬨<div class="sym-label">7</div></div>
-      <div class="sym-cell">⬩<div class="sym-label">8</div></div>
+    <div class="symbol-grid" style="grid-template-columns:repeat(8,1fr)">
+        <div class="sym-cell">◈<div class="sym-label">0</div></div>
+        <div class="sym-cell">⬟<div class="sym-label">1</div></div>
+        <div class="sym-cell">⬡<div class="sym-label">2</div></div>
+        <div class="sym-cell">⬢<div class="sym-label">3</div></div>
+        <div class="sym-cell">⬣<div class="sym-label">4</div></div>
+        <div class="sym-cell">⬤<div class="sym-label">5</div></div>
+        <div class="sym-cell">⬧<div class="sym-label">6</div></div>
+        <div class="sym-cell">⬨<div class="sym-label">7</div></div>
+        <div class="sym-cell">⬩<div class="sym-label">8</div></div>
+        <div class="sym-cell">◉<div class="sym-label">9</div></div>
+        <div class="sym-cell">◊<div class="sym-label">A</div></div>
+        <div class="sym-cell">◌<div class="sym-label">B</div></div>
+        <div class="sym-cell">◍<div class="sym-label">C</div></div>
+        <div class="sym-cell">◎<div class="sym-label">D</div></div>
+        <div class="sym-cell">●<div class="sym-label">E</div></div>
+        <div class="sym-cell">○<div class="sym-label">F</div></div>
     </div>
 
     <p style="font-size:12px;color:var(--dim-green);margin:6px 0 10px">INTERCEPTED SEQUENCE:</p>
-    <div class="symbol-clue">⬢ ⬩</div>
+    <div class="symbol-clue">⬩ ○</div>
 
     <button class="hint-toggle" onclick="toggleHint('h2')">[ HINT ]</button>
     <div id="h2" class="hint-box">
@@ -443,16 +451,16 @@
       <tr>
         <th>CODENAME</th><th>DIVISION</th><th>FLOOR</th><th>CLEARANCE</th><th>STATUS</th>
       </tr>
-      <tr><td>AX-7</td><td>Logistics</td><td>3rd</td><td>ALPHA</td><td>Active</td></tr>
-      <tr><td>BR-2</td><td>Comms</td><td>5th</td><td>BETA</td><td>Inactive</td></tr>
-      <tr><td>QT-5</td><td>Comms</td><td>3rd</td><td>ALPHA</td><td>Active</td></tr>
-      <tr><td>NV-9</td><td>Logistics</td><td>5th</td><td>GAMMA</td><td>Active</td></tr>
-      <tr><td>MP-4</td><td>Comms</td><td>5th</td><td>ALPHA</td><td>Active</td></tr>
+      <tr><td>A7</td><td>Logistics</td><td>3rd</td><td>ALPHA</td><td>Active</td></tr>
+      <tr><td>B2</td><td>Comms</td><td>5th</td><td>BETA</td><td>Inactive</td></tr>
+      <tr><td>Q5</td><td>Comms</td><td>3rd</td><td>ALPHA</td><td>Active</td></tr>
+      <tr><td>N9</td><td>Logistics</td><td>5th</td><td>GAMMA</td><td>Active</td></tr>
+      <tr><td>5P</td><td>Comms</td><td>5th</td><td>ALPHA</td><td>Active</td></tr>
     </table>
 
     <div style="margin-top:14px;font-size:12px;line-height:2;color:#88ffcc">
       <div>📌 <strong style="color:var(--amber)">Clue 1:</strong> The mole is in the <em>Comms</em> division and is currently <em>Active</em>.</div>
-      <div>📌 <strong style="color:var(--amber)">Clue 2:</strong> The mole operates on the <em>5th floor</em>.</div>
+      <div>📌 <strong style="color:var(--amber)">Clue 2:</strong> The mole operates on the floor above <em>4th floor</em>.</div>
       <div>📌 <strong style="color:var(--amber)">Clue 3:</strong> The mole does NOT have BETA clearance.</div>
     </div>
 
@@ -477,7 +485,7 @@
       </div>
       <div class="binary-row">
         <span class="binary-label">B:</span>
-        <span class="binary-bits">0001</span>
+        <span class="binary-bits">0011</span>
         <span class="binary-arrow">→</span>
         <span style="color:var(--dim-green);font-size:12px">Decimal ?</span>
       </div>
@@ -563,11 +571,11 @@
   // XOR-obfuscated SHA-256(answer + salt) for each segment
   // These are meaningless without the salt and XOR key — answers are never stored in plain text
   const _H = [
-    /* seg1 */ [89,29,108,147,121,130,168,26,89,68,55,193,126,209,248,20,88,26,100,198,123,209,162,78,94,74,96,193,125,210,248,24,88,26,102,195,44,129,173,75,2,72,49,144,42,211,163,72,89,72,51,196,122,213,162,73,92,76,97,195,121,135,162,79],
-    /* seg2 */ [3,29,101,145,42,134,253,31,10,79,98,202,126,134,171,31,13,24,55,147,42,129,255,72,95,74,52,150,33,220,162,79,88,73,48,150,126,215,253,30,89,30,49,199,47,135,171,26,94,29,103,194,122,209,254,72,91,73,108,199,122,129,162,78],
-    /* seg3 */ [89,31,51,203,41,133,249,25,12,29,98,199,121,215,248,20,94,29,55,198,122,215,168,79,13,30,102,198,121,209,253,78,3,68,52,148,123,209,162,29,92,31,100,195,33,211,250,28,15,76,54,147,42,129,254,79,3,29,48,196,46,135,170,78],
-    /* seg4 */ [9,29,54,150,42,221,248,79,91,26,108,195,125,210,172,30,95,75,54,198,124,215,169,20,8,72,100,203,125,208,248,28,9,31,54,192,126,135,174,79,10,77,108,148,43,214,170,31,14,26,102,148,125,221,163,24,92,30,100,195,42,129,170,24]
-  ];
+  /* seg1 */ [11,75,52,199,45,208,162,24,12,76,100,197,124,133,175,27,91,78,51,145,122,210,174,75,14,77,96,144,40,212,253,29,95,31,109,199,41,214,163,29,95,77,51,195,41,208,249,28,15,76,48,198,47,208,163,29,12,74,54,193,43,221,175,79],
+  /* seg2 */ [88,78,51,195,124,130,255,79,10,25,108,151,33,215,175,20,11,77,54,192,43,210,250,25,9,75,52,192,123,212,248,21,88,75,97,195,126,214,250,79,13,69,96,148,43,210,249,29,9,68,48,193,40,135,249,24,88,31,103,145,32,134,170,21],
+  /* seg3 */ [13,74,52,194,121,212,175,24,88,26,51,196,126,220,255,27,89,30,108,193,125,128,253,79,88,69,100,196,45,213,249,31,3,30,108,144,125,215,255,24,2,25,101,148,32,213,168,30,88,68,101,193,122,129,175,72,95,25,51,197,125,212,174,26],
+  /* seg4 */ [94,79,48,151,43,134,253,24,2,77,51,147,121,221,248,27,95,76,49,202,124,135,162,29,13,68,108,196,126,130,249,30,15,31,101,145,33,209,168,79,9,77,102,144,123,134,163,24,9,78,97,144,47,135,162,26,92,76,103,199,43,210,168,26]
+];
 
   // Recover stored hash hex from obfuscated array
   function _xr(arr) {
